@@ -185,6 +185,15 @@ img, svg { max-width: 100%; display: block; }
     display: flex;
     align-items: center;
 }
+.hero__canvas {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    width: 100%;
+    height: 100%;
+    opacity: 0.55;
+    pointer-events: none;
+}
 .hero__atmosphere {
     position: absolute; inset: 0;
     z-index: -1;
@@ -762,6 +771,225 @@ img, svg { max-width: 100%; display: block; }
     transform: translateX(-4px);
 }
 
+/* ─── Platform (search + browse all automations) ─────────── */
+.platform-section {
+    padding: 120px 32px;
+    max-width: var(--max-w);
+    margin: 0 auto;
+}
+.platform-search {
+    max-width: 720px;
+    margin: 0 auto 24px;
+    position: relative;
+}
+.platform-search__input {
+    width: 100%;
+    padding: 20px 60px 20px 24px;
+    border-radius: var(--r-pill);
+    border: 1px solid var(--line);
+    background: var(--surface);
+    box-shadow: var(--shadow-md);
+    font-family: inherit;
+    font-size: 1.05rem;
+    color: var(--ink);
+    direction: rtl;
+    transition: all 240ms var(--ease);
+}
+.platform-search__input::placeholder { color: var(--ink-mute); }
+.platform-search__input:focus {
+    outline: none;
+    border-color: var(--brand-1);
+    box-shadow: var(--shadow-md), 0 0 0 4px rgba(99,91,255,0.15);
+}
+.platform-search__icon {
+    position: absolute;
+    right: 22px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--ink-mute);
+    pointer-events: none;
+}
+.platform-filters {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    margin-bottom: 40px;
+    flex-wrap: wrap;
+}
+.chip {
+    padding: 10px 20px;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: var(--r-pill);
+    font-family: inherit;
+    font-weight: 500;
+    font-size: 0.92rem;
+    color: var(--ink-soft);
+    cursor: pointer;
+    transition: all 240ms var(--ease);
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+}
+.chip:hover { color: var(--ink); border-color: var(--ink-soft); }
+.chip.is-active {
+    background: var(--ink);
+    color: white;
+    border-color: var(--ink);
+}
+.chip__count {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.78rem;
+    opacity: 0.7;
+}
+
+.automations {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 16px;
+}
+.auto-card {
+    display: flex;
+    flex-direction: column;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: var(--r-lg);
+    padding: 28px;
+    transition: all 340ms var(--ease);
+    position: relative;
+    overflow: hidden;
+    text-align: right;
+}
+.auto-card:hover {
+    transform: translateY(-4px);
+    border-color: var(--brand-1);
+    box-shadow: var(--shadow-lg);
+}
+.auto-card::before {
+    content: "";
+    position: absolute;
+    top: 0; right: 0;
+    width: 80px; height: 80px;
+    border-radius: 50%;
+    filter: blur(40px);
+    opacity: 0;
+    transition: opacity 340ms var(--ease);
+    pointer-events: none;
+}
+.auto-card:hover::before { opacity: 0.5; }
+.auto-card--blue::before { background: var(--brand-1); }
+.auto-card--pink::before { background: var(--brand-3); }
+.auto-card--green::before { background: var(--brand-5); }
+.auto-card--amber::before { background: var(--brand-4); }
+.auto-card--cyan::before { background: var(--brand-2); }
+.auto-card.is-hidden { display: none; }
+
+.auto-card__top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 16px;
+}
+.auto-card__icon {
+    width: 44px; height: 44px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    flex-shrink: 0;
+    font-size: 1.4rem;
+}
+.auto-card__icon--blue   { background: var(--grad-cool); }
+.auto-card__icon--pink   { background: var(--grad-warm); }
+.auto-card__icon--green  { background: var(--grad-emerald); }
+.auto-card__icon--amber  { background: linear-gradient(135deg, #ffb13b, #ff6b9c); }
+.auto-card__icon--cyan   { background: linear-gradient(135deg, #00d4ff, #635bff); }
+.auto-card__badge {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.66rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 4px 10px;
+    border-radius: var(--r-pill);
+    font-weight: 700;
+}
+.auto-card__badge--live { background: #d1fae5; color: #047857; display: inline-flex; align-items: center; gap: 6px; }
+.auto-card__badge--live::before {
+    content: ""; width: 6px; height: 6px; border-radius: 50%;
+    background: #10b981; box-shadow: 0 0 0 3px rgba(16,185,129,0.2);
+    animation: pulse 2s infinite;
+}
+.auto-card__badge--beta { background: #fef3c7; color: #92400e; }
+.auto-card__badge--soon { background: var(--bg-soft); color: var(--ink-mute); }
+
+.auto-card__name {
+    font-weight: 800;
+    font-size: 1.25rem;
+    letter-spacing: -0.015em;
+    margin-bottom: 4px;
+}
+.auto-card__hebrew {
+    color: var(--ink-soft);
+    font-size: 0.92rem;
+    margin-bottom: 16px;
+}
+.auto-card__desc {
+    color: var(--ink-soft);
+    font-size: 0.92rem;
+    line-height: 1.5;
+    margin-bottom: 20px;
+    flex: 1;
+}
+.auto-card__footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    color: var(--brand-1);
+    font-weight: 600;
+    font-size: 0.92rem;
+    transition: gap 240ms var(--ease);
+}
+.auto-card__category {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.72rem;
+    color: var(--ink-mute);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    font-weight: 600;
+}
+
+.platform-empty {
+    text-align: center;
+    padding: 48px 24px;
+    color: var(--ink-mute);
+    font-size: 1.05rem;
+    display: none;
+}
+.platform-empty.is-visible { display: block; }
+
+.platform-cta {
+    margin-top: 32px;
+    padding: 24px 28px;
+    background: var(--bg-soft);
+    border: 1px dashed var(--line-strong, #c9d0d8);
+    border-radius: var(--r-lg);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+    flex-wrap: wrap;
+}
+.platform-cta__text { color: var(--ink-soft); font-size: 0.98rem; }
+.platform-cta__text strong { color: var(--ink); }
+.platform-cta__btn {
+    color: var(--brand-1);
+    font-weight: 600;
+    border-bottom: 1px solid currentColor;
+    padding-bottom: 1px;
+}
+
 /* ─── How it works ────────────────────────────────────────── */
 .steps-section {
     padding: 120px 32px;
@@ -1010,14 +1238,15 @@ img, svg { max-width: 100%; display: block; }
         </a>
         <nav class="nav__links">
             <a href="#products">המוצרים</a>
+            <a href="#platform">הפלטפורמה</a>
             <a href="#how">איך זה עובד</a>
-            <a href="#backlog">בקרוב</a>
             <a href="#contact" class="nav__cta">דברו איתנו ←</a>
         </nav>
     </div>
 </header>
 
 <section class="hero">
+    <canvas class="hero__canvas" id="heroCanvas" aria-hidden="true"></canvas>
     <div class="hero__atmosphere">
         <div class="hero__blob hero__blob--1"></div>
         <div class="hero__blob hero__blob--2"></div>
@@ -1214,32 +1443,212 @@ img, svg { max-width: 100%; display: block; }
     </div>
 </section>
 
+<section class="platform-section" id="platform">
+    <div class="section__head">
+        <div class="section__eyebrow">03 · הפלטפורמה</div>
+        <h2 class="section__title">פלטפורמת <span class="grad">אוטומציות.</span></h2>
+        <p class="section__lead">
+            חפש את הבוט שמתאים לך, או בקש חדש. כל אוטומציה — דף משלה עם דמו, תמחור, ומה היא עושה בפועל.
+        </p>
+    </div>
+
+    <div class="platform-search">
+        <input type="text" class="platform-search__input" id="autoSearch"
+               placeholder="חפש: 'קבלות', 'לקוחות', 'הזמנות', 'חשבוניות'..." dir="rtl">
+        <svg class="platform-search__icon" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+        </svg>
+    </div>
+
+    <div class="platform-filters" id="autoFilters">
+        <button class="chip is-active" data-filter="all">הכל <span class="chip__count">10</span></button>
+        <button class="chip" data-filter="live">LIVE <span class="chip__count">1</span></button>
+        <button class="chip" data-filter="beta">BETA <span class="chip__count">2</span></button>
+        <button class="chip" data-filter="soon">בקרוב <span class="chip__count">7</span></button>
+    </div>
+
+    <div class="automations reveal" id="autoGrid">
+        <a class="auto-card auto-card--blue" href="./expense-bridge/" data-status="live" data-tags="קבלות חשבוניות הוצאות אקסל מיילים">
+            <div class="auto-card__top">
+                <div class="auto-card__icon auto-card__icon--blue">📸</div>
+                <span class="auto-card__badge auto-card__badge--live">LIVE</span>
+            </div>
+            <div class="auto-card__name">Expense Bridge</div>
+            <div class="auto-card__hebrew">קבלות → אקסל</div>
+            <p class="auto-card__desc">תמונת קבלה ב-WhatsApp/טלגרם → שורה מסודרת באקסל שלכם עם תאריך, סכום, קטגוריה.</p>
+            <div class="auto-card__footer">
+                <span class="auto-card__category">FINANCE</span>
+                <span>פתח דף ←</span>
+            </div>
+        </a>
+
+        <a class="auto-card auto-card--pink" href="./sitebot/" data-status="beta" data-tags="אתר אתרים שיווק תדמית">
+            <div class="auto-card__top">
+                <div class="auto-card__icon auto-card__icon--pink">🌐</div>
+                <span class="auto-card__badge auto-card__badge--beta">BETA</span>
+            </div>
+            <div class="auto-card__name">Sitebot</div>
+            <div class="auto-card__hebrew">אתר עסקי דרך שיחה</div>
+            <p class="auto-card__desc">שיחה בעברית עם הבוט → אתר מקצועי מותאם לעסק שלכם תוך 5 דקות. 79₪/חודש.</p>
+            <div class="auto-card__footer">
+                <span class="auto-card__category">WEBSITE</span>
+                <span>פתח דף ←</span>
+            </div>
+        </a>
+
+        <a class="auto-card auto-card--green" href="./leadclub/" data-status="beta" data-tags="לקוחות מועדון לידים SMS שיווק">
+            <div class="auto-card__top">
+                <div class="auto-card__icon auto-card__icon--green">👥</div>
+                <span class="auto-card__badge auto-card__badge--beta">BETA</span>
+            </div>
+            <div class="auto-card__name">Leadclub</div>
+            <div class="auto-card__hebrew">מועדון לקוחות אוטומטי</div>
+            <p class="auto-card__desc">ייבוא רשימה (אקסל/צילום) → שליחת מבצעים ב-SMS+מייל אוטומטית, ניהול lifecycle.</p>
+            <div class="auto-card__footer">
+                <span class="auto-card__category">CRM</span>
+                <span>פתח דף ←</span>
+            </div>
+        </a>
+
+        <a class="auto-card auto-card--amber" href="./invoice-bridge/" data-status="soon" data-tags="חשבוניות ספקים הנהלת חשבונות PDF">
+            <div class="auto-card__top">
+                <div class="auto-card__icon auto-card__icon--amber">🧾</div>
+                <span class="auto-card__badge auto-card__badge--soon">בקרוב</span>
+            </div>
+            <div class="auto-card__name">Invoice Bridge</div>
+            <div class="auto-card__hebrew">חשבוניות ספקים → הנה"ח</div>
+            <p class="auto-card__desc">חשבוניות PDF במייל → שורות בגיליון הנה"ח. מתאים לרו"ח שמטפל ב-30+ עסקים.</p>
+            <div class="auto-card__footer">
+                <span class="auto-card__category">FINANCE</span>
+                <span>למידע נוסף ←</span>
+            </div>
+        </a>
+
+        <a class="auto-card auto-card--cyan" href="./order-bridge/" data-status="soon" data-tags="הזמנות לקוחות פקודות עבודה">
+            <div class="auto-card__top">
+                <div class="auto-card__icon auto-card__icon--cyan">📋</div>
+                <span class="auto-card__badge auto-card__badge--soon">בקרוב</span>
+            </div>
+            <div class="auto-card__name">Order Bridge</div>
+            <div class="auto-card__hebrew">הזמנות → פקודות עבודה</div>
+            <p class="auto-card__desc">הודעה חופשית ("3 ארונות אלון ליום ג'") → שורה מובנית עם לקוח, פריט, כמות, דחיפות.</p>
+            <div class="auto-card__footer">
+                <span class="auto-card__category">OPERATIONS</span>
+                <span>למידע נוסף ←</span>
+            </div>
+        </a>
+
+        <a class="auto-card auto-card--blue" href="./report-bridge/" data-status="soon" data-tags="דוחות כספיים מטריקות אנליסטים">
+            <div class="auto-card__top">
+                <div class="auto-card__icon auto-card__icon--blue">📊</div>
+                <span class="auto-card__badge auto-card__badge--soon">בקרוב</span>
+            </div>
+            <div class="auto-card__name">Report Bridge</div>
+            <div class="auto-card__hebrew">דוחות כספיים → טבלת מטריקות</div>
+            <p class="auto-card__desc">דוח כספי PDF (80 עמ') → טבלת KPIs מובנית: הכנסות, רווח, מכפילים, יחסים. PoC קיים.</p>
+            <div class="auto-card__footer">
+                <span class="auto-card__category">ANALYTICS</span>
+                <span>למידע נוסף ←</span>
+            </div>
+        </a>
+
+        <a class="auto-card auto-card--pink" href="./lead-speed/" data-status="soon" data-tags="לידים מענה 24/7 שיווק">
+            <div class="auto-card__top">
+                <div class="auto-card__icon auto-card__icon--pink">⚡</div>
+                <span class="auto-card__badge auto-card__badge--soon">בקרוב</span>
+            </div>
+            <div class="auto-card__name">Lead Speed</div>
+            <div class="auto-card__hebrew">מענה ללידים בשניות</div>
+            <p class="auto-card__desc">טופס פנייה מהאתר → תגובה אישית בעברית תוך שניות, גם ב-3 בלילה. הכפלת conversion.</p>
+            <div class="auto-card__footer">
+                <span class="auto-card__category">SALES</span>
+                <span>למידע נוסף ←</span>
+            </div>
+        </a>
+
+        <a class="auto-card auto-card--green" href="./follow-up/" data-status="soon" data-tags="פולואפים לידים שיווק">
+            <div class="auto-card__top">
+                <div class="auto-card__icon auto-card__icon--green">🔁</div>
+                <span class="auto-card__badge auto-card__badge--soon">בקרוב</span>
+            </div>
+            <div class="auto-card__name">Follow-Up Engine</div>
+            <div class="auto-card__hebrew">סדרת פולואפים אוטומטית</div>
+            <p class="auto-card__desc">ליד חם → 5 הודעות מותאמות לאורך 14 יום. עוצר כשהלקוח עונה. אחוז סגירה ×2.</p>
+            <div class="auto-card__footer">
+                <span class="auto-card__category">SALES</span>
+                <span>למידע נוסף ←</span>
+            </div>
+        </a>
+
+        <a class="auto-card auto-card--amber" href="./legal-bridge/" data-status="soon" data-tags="משפטי חוזים מסמכים תמצית">
+            <div class="auto-card__top">
+                <div class="auto-card__icon auto-card__icon--amber">⚖️</div>
+                <span class="auto-card__badge auto-card__badge--soon">בקרוב</span>
+            </div>
+            <div class="auto-card__name">Legal Bridge</div>
+            <div class="auto-card__hebrew">מסמכים משפטיים → תמצית</div>
+            <p class="auto-card__desc">חוזה / מסמך משפטי → תקציר מובנה: צדדים, סעיפים מרכזיים, התחייבויות, סיכונים.</p>
+            <div class="auto-card__footer">
+                <span class="auto-card__category">LEGAL</span>
+                <span>למידע נוסף ←</span>
+            </div>
+        </a>
+
+        <a class="auto-card auto-card--cyan" href="./cv-bridge/" data-status="soon" data-tags="גיוס HR קורות חיים מועמדים">
+            <div class="auto-card__top">
+                <div class="auto-card__icon auto-card__icon--cyan">👔</div>
+                <span class="auto-card__badge auto-card__badge--soon">בקרוב</span>
+            </div>
+            <div class="auto-card__name">CV Bridge</div>
+            <div class="auto-card__hebrew">קורות חיים → טבלת מועמדים</div>
+            <p class="auto-card__desc">תיקיית קו"ח (PDF/Word) → טבלה עם שם, ניסיון, השכלה, מיומנויות. מסננת אוטומטית.</p>
+            <div class="auto-card__footer">
+                <span class="auto-card__category">HR</span>
+                <span>למידע נוסף ←</span>
+            </div>
+        </a>
+    </div>
+
+    <div class="platform-empty" id="autoEmpty">
+        לא מצאנו אוטומציה שמתאימה. נסה מילה אחרת — או בקש מאיתנו לבנות.
+    </div>
+
+    <div class="platform-cta">
+        <div class="platform-cta__text">
+            <strong>צריך אוטומציה אחרת?</strong> אם יש לך תהליך שמבזבז שעות, סביר שנוכל לבנות לך אותו.
+        </div>
+        <a href="#contact" class="platform-cta__btn">בקש אוטומציה חדשה ←</a>
+    </div>
+</section>
+
 <section class="steps-section" id="how">
     <div class="section__head">
-        <div class="section__eyebrow">03 · איך זה עובד</div>
+        <div class="section__eyebrow">04 · איך זה עובד</div>
         <h2 class="section__title">3 שלבים.<br><span class="grad">5 דקות.</span></h2>
         <p class="section__lead">
-            אין התקנה. אין שרתים. הכל זורם דרך טלגרם וגוגל.
+            אותו flow לכל בוט. אין התקנה. אין שרתים. הכל זורם דרך טלגרם וגוגל.
         </p>
     </div>
     <div class="steps reveal">
         <div class="step">
             <div class="step__num">1</div>
-            <h3 class="step__title">פותחים בוט בטלגרם</h3>
+            <h3 class="step__title">בוחרים בוט מהפלטפורמה</h3>
             <p class="step__desc">
-                שולחים /start. הבוט פותח שיחה בעברית ושואל שאלות קצרות על העסק.
+                כל אוטומציה — דף משלה. רואים מה היא עושה, איך, ולמי. לוחצים "התחל" — נפתח טלגרם.
             </p>
             <div class="step__visual">
-                <span style="color:var(--brand-1)">$</span> /start<br>
-                <span style="color:var(--ink-mute)">→ שלום! איך קוראים לעסק?</span>
+                <span style="color:var(--brand-1)">📸</span> Expense<br>
+                <span style="color:var(--brand-3)">🌐</span> Sitebot<br>
+                <span style="color:var(--brand-5)">👥</span> Leadclub<br>
+                <span style="color:var(--ink-mute)">⋯ עוד 7</span>
             </div>
         </div>
         <div class="step">
             <div class="step__num">2</div>
-            <h3 class="step__title">מחברים גוגל</h3>
+            <h3 class="step__title">מחברים גוגל פעם אחת</h3>
             <p class="step__desc">
-                קישור Google OAuth — לחיצה אחת. הבוט מקבל הרשאה ליצור גיליון בחשבון שלכם.
-                <strong>לא בשלנו.</strong>
+                קישור Google OAuth — לחיצה אחת. הבוט יוצר גיליון בחשבון שלכם.
+                <strong>לא בשלנו.</strong> טוקן מוצפן Fernet.
             </p>
             <div class="step__visual">
                 <span style="color:var(--brand-5)">✓</span> OAuth 2.0<br>
@@ -1249,44 +1658,19 @@ img, svg { max-width: 100%; display: block; }
         </div>
         <div class="step">
             <div class="step__num">3</div>
-            <h3 class="step__title">מתחילים לעבוד</h3>
+            <h3 class="step__title">שולחים — מקבלים מסודר</h3>
             <p class="step__desc">
-                שלחו תמונה / טקסט / רשימה — הבוט מחזיר דאטה מסודר. תוך שניות. 24/7.
+                כל בוט מקבל קלט שונה (תמונה, טקסט, רשימה, קובץ) — ומחזיר את אותו דבר: שורה / טבלה / אתר מסודר. תוך שניות.
             </p>
             <div class="step__visual">
-                <span style="color:var(--brand-1)">→</span> תמונת קבלה<br>
-                <span style="color:var(--brand-5)">←</span> שורה ב-Sheet (1.2s)
+                <span style="color:var(--brand-1)">📥</span> תמונה / טקסט / רשימה<br>
+                <span style="color:var(--brand-2)">⟶</span> AI מעבד<br>
+                <span style="color:var(--brand-5)">📤</span> Sheet / אתר / קמפיין
             </div>
         </div>
     </div>
 </section>
 
-<section class="backlog-section" id="backlog">
-    <div class="section__head">
-        <div class="section__eyebrow">04 · בקרוב</div>
-        <h2 class="section__title">עוד 7 בוטים <span class="grad">בתור.</span></h2>
-        <p class="section__lead">
-            אותו מנוע, שדות אחרים. אם יש לך תהליך שמבזבז שעות — סביר שיש לנו פתרון מתוכנן.
-        </p>
-    </div>
-    <div class="marquee">
-        <div class="backlog-item"><span class="backlog-item__name">Invoice Bridge</span><span class="backlog-item__desc">חשבוניות PDF → הנהלת חשבונות</span></div>
-        <div class="backlog-item"><span class="backlog-item__name">Order Bridge</span><span class="backlog-item__desc">הזמנות בטקסט → פקודת עבודה</span></div>
-        <div class="backlog-item"><span class="backlog-item__name">Report Bridge</span><span class="backlog-item__desc">דוחות כספיים → מטריקות</span></div>
-        <div class="backlog-item"><span class="backlog-item__name">Lead Speed</span><span class="backlog-item__desc">תגובה ללידים בשניות, 24/7</span></div>
-        <div class="backlog-item"><span class="backlog-item__name">Follow-Up Engine</span><span class="backlog-item__desc">פולואפים אוטומטיים ללידים</span></div>
-        <div class="backlog-item"><span class="backlog-item__name">Legal Bridge</span><span class="backlog-item__desc">מסמכים משפטיים → תמצית</span></div>
-        <div class="backlog-item"><span class="backlog-item__name">CV Bridge</span><span class="backlog-item__desc">קו"ח → טבלת מועמדים</span></div>
-        <!-- duplicate for infinite scroll -->
-        <div class="backlog-item"><span class="backlog-item__name">Invoice Bridge</span><span class="backlog-item__desc">חשבוניות PDF → הנהלת חשבונות</span></div>
-        <div class="backlog-item"><span class="backlog-item__name">Order Bridge</span><span class="backlog-item__desc">הזמנות בטקסט → פקודת עבודה</span></div>
-        <div class="backlog-item"><span class="backlog-item__name">Report Bridge</span><span class="backlog-item__desc">דוחות כספיים → מטריקות</span></div>
-        <div class="backlog-item"><span class="backlog-item__name">Lead Speed</span><span class="backlog-item__desc">תגובה ללידים בשניות, 24/7</span></div>
-        <div class="backlog-item"><span class="backlog-item__name">Follow-Up Engine</span><span class="backlog-item__desc">פולואפים אוטומטיים ללידים</span></div>
-        <div class="backlog-item"><span class="backlog-item__name">Legal Bridge</span><span class="backlog-item__desc">מסמכים משפטיים → תמצית</span></div>
-        <div class="backlog-item"><span class="backlog-item__name">CV Bridge</span><span class="backlog-item__desc">קו"ח → טבלת מועמדים</span></div>
-    </div>
-</section>
 
 <section class="cta" id="contact">
     <div class="cta__inner">
@@ -1361,6 +1745,131 @@ const countIO = new IntersectionObserver((entries) => {
     });
 }, {threshold: 0.4});
 document.querySelectorAll('[data-count]').forEach(el => countIO.observe(el));
+
+/* ─── Hero canvas: particle network (video-like generative bg) ─── */
+(function() {
+    const canvas = document.getElementById('heroCanvas');
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    let W = 0, H = 0, dpr = 1;
+    const COLORS = [
+        [99, 91, 255],   // brand-1 indigo
+        [0, 212, 255],   // brand-2 cyan
+        [255, 107, 156], // brand-3 pink
+        [255, 177, 59],  // brand-4 amber
+    ];
+    let particles = [];
+    const COUNT_DESKTOP = 70;
+    const COUNT_MOBILE = 30;
+    const LINK_DIST = 140;
+
+    function resize() {
+        dpr = Math.min(window.devicePixelRatio || 1, 2);
+        const r = canvas.parentElement.getBoundingClientRect();
+        W = r.width; H = r.height;
+        canvas.width = W * dpr;
+        canvas.height = H * dpr;
+        canvas.style.width = W + 'px';
+        canvas.style.height = H + 'px';
+        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+        const count = W < 700 ? COUNT_MOBILE : COUNT_DESKTOP;
+        particles = Array.from({length: count}, () => spawn());
+    }
+    function spawn() {
+        const c = COLORS[Math.floor(Math.random() * COLORS.length)];
+        return {
+            x: Math.random() * W,
+            y: Math.random() * H,
+            vx: (Math.random() - 0.5) * 0.35,
+            vy: (Math.random() - 0.5) * 0.35,
+            r: 1 + Math.random() * 2.4,
+            c: c,
+        };
+    }
+    function step() {
+        ctx.clearRect(0, 0, W, H);
+        // Links
+        for (let i = 0; i < particles.length; i++) {
+            const a = particles[i];
+            for (let j = i + 1; j < particles.length; j++) {
+                const b = particles[j];
+                const dx = a.x - b.x, dy = a.y - b.y;
+                const d = Math.sqrt(dx*dx + dy*dy);
+                if (d < LINK_DIST) {
+                    const alpha = (1 - d / LINK_DIST) * 0.4;
+                    const c = a.c;
+                    ctx.strokeStyle = `rgba(${c[0]},${c[1]},${c[2]},${alpha})`;
+                    ctx.lineWidth = 1;
+                    ctx.beginPath();
+                    ctx.moveTo(a.x, a.y);
+                    ctx.lineTo(b.x, b.y);
+                    ctx.stroke();
+                }
+            }
+        }
+        // Dots
+        for (const p of particles) {
+            p.x += p.vx; p.y += p.vy;
+            if (p.x < -20) p.x = W + 20;
+            if (p.x > W + 20) p.x = -20;
+            if (p.y < -20) p.y = H + 20;
+            if (p.y > H + 20) p.y = -20;
+            const c = p.c;
+            const grd = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, p.r * 4);
+            grd.addColorStop(0, `rgba(${c[0]},${c[1]},${c[2]},0.9)`);
+            grd.addColorStop(1, `rgba(${c[0]},${c[1]},${c[2]},0)`);
+            ctx.fillStyle = grd;
+            ctx.beginPath();
+            ctx.arc(p.x, p.y, p.r * 4, 0, Math.PI * 2);
+            ctx.fill();
+        }
+        if (!prefersReduced) requestAnimationFrame(step);
+    }
+    resize();
+    window.addEventListener('resize', () => { resize(); }, {passive: true});
+    if (!prefersReduced) requestAnimationFrame(step);
+    else step();
+})();
+
+/* ─── Platform search + filter ─── */
+(function() {
+    const grid = document.getElementById('autoGrid');
+    const search = document.getElementById('autoSearch');
+    const empty = document.getElementById('autoEmpty');
+    const filters = document.getElementById('autoFilters');
+    if (!grid || !search) return;
+    const cards = Array.from(grid.querySelectorAll('.auto-card'));
+    let activeFilter = 'all';
+    let query = '';
+
+    function applyFilters() {
+        let visible = 0;
+        cards.forEach(card => {
+            const status = card.dataset.status;
+            const text = (card.textContent + ' ' + (card.dataset.tags || '')).toLowerCase();
+            const matchFilter = activeFilter === 'all' || status === activeFilter;
+            const matchSearch = !query || text.includes(query);
+            const show = matchFilter && matchSearch;
+            card.classList.toggle('is-hidden', !show);
+            if (show) visible++;
+        });
+        empty.classList.toggle('is-visible', visible === 0);
+    }
+
+    search.addEventListener('input', (e) => {
+        query = e.target.value.trim().toLowerCase();
+        applyFilters();
+    });
+    filters.addEventListener('click', (e) => {
+        const chip = e.target.closest('.chip');
+        if (!chip) return;
+        filters.querySelectorAll('.chip').forEach(c => c.classList.remove('is-active'));
+        chip.classList.add('is-active');
+        activeFilter = chip.dataset.filter;
+        applyFilters();
+    });
+})();
 </script>
 </body>
 </html>
