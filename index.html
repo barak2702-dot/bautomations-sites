@@ -1567,7 +1567,7 @@ img, svg { max-width: 100%; display: block; }
         </div>
 
         <div class="bento reveal">
-            <article class="product-card product-card--hero">
+            <article class="product-card product-card--hero" data-href="./expense-bridge/" role="link" tabindex="0">
                 <div class="product-card__top">
                     <div style="display:flex; gap:20px; align-items:center;">
                         <div class="product-card__icon product-card__icon--blue">
@@ -1603,7 +1603,7 @@ img, svg { max-width: 100%; display: block; }
                 </div>
             </article>
 
-            <article class="product-card product-card--side">
+            <article class="product-card product-card--side" data-href="./sitebot/" role="link" tabindex="0">
                 <div class="product-card__top">
                     <div class="product-card__icon product-card__icon--pink">
                         <svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor"><path d="M19 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V5a2 2 0 0 0-2-2zm-7 14H7v-2h5v2zm5-4H7v-2h10v2zm0-4H7V7h10v2z"/></svg>
@@ -1628,7 +1628,7 @@ img, svg { max-width: 100%; display: block; }
                 </div>
             </article>
 
-            <article class="product-card product-card--side">
+            <article class="product-card product-card--side" data-href="./leadclub/" role="link" tabindex="0">
                 <div class="product-card__top">
                     <div class="product-card__icon product-card__icon--green">
                         <svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>
@@ -2068,20 +2068,20 @@ document.querySelectorAll('[data-count]').forEach(el => countIO.observe(el));
     let activeFilter = 'all';
     let query = '';
 
-    // Make article.auto-card behave like a link via data-href
-    cards.forEach(card => {
+    // Make article.auto-card AND product-card behave like a link via data-href
+    document.querySelectorAll('[data-href]').forEach(card => {
         const href = card.dataset.href;
         if (!href) return;
         card.style.cursor = 'pointer';
-        card.setAttribute('role', 'link');
-        card.setAttribute('tabindex', '0');
+        if (!card.hasAttribute('role')) card.setAttribute('role', 'link');
+        if (!card.hasAttribute('tabindex')) card.setAttribute('tabindex', '0');
         card.addEventListener('click', (e) => {
-            // Don't intercept clicks on inner anchors (Telegram quick link)
-            if (e.target.closest('a')) return;
+            // Don't intercept clicks on inner anchors/buttons (Telegram + product CTAs)
+            if (e.target.closest('a, button')) return;
             window.location.href = href;
         });
         card.addEventListener('keydown', (e) => {
-            if (e.key === 'Enter') { window.location.href = href; }
+            if (e.key === 'Enter' && e.target === card) { window.location.href = href; }
         });
     });
 
