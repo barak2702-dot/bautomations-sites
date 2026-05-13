@@ -1,955 +1,482 @@
 <!DOCTYPE html>
 <html lang="he" dir="rtl">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Expense Bridge — סורק הקבלות</title>
-    <meta name="description" content="שלח תמונה של קבלה לבוט. ה-AI מסדר את הכל בגוגל שיטס שלך. בעברית. אוטומטית.">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Frank+Ruhl+Libre:wght@500;700;900&family=Assistant:wght@400;600;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
-    <style>
-        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#fafafe">
+<title>Expense Bridge · B Automations</title>
+<meta name="description" content="תמונת קבלה ב-WhatsApp → שורה מסודרת באקסל. תוך שניות. בעברית.">
+<meta property="og:title" content="Expense Bridge · B Automations">
+<meta property="og:description" content="תמונת קבלה ב-WhatsApp → שורה מסודרת באקסל. תוך שניות. בעברית.">
 
-        :root {
-            --paper:       #f1ebdc;
-            --paper-deep:  #e6dec9;
-            --paper-light: #fbf6e8;
-            --ink:         #1a1612;
-            --ink-light:   #5c4f3f;
-            --stamp:       #c8321e;
-            --rule:        #4a3f31;
-        }
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Heebo:wght@100;300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
 
-        html { scroll-behavior: smooth; }
+<style>
+:root {
+    --bg: #fafafe;
+    --bg-soft: #f1f4fa;
+    --surface: #ffffff;
+    --ink: #0a1530;
+    --ink-soft: #4a5570;
+    --ink-mute: #8896b0;
+    --line: #e6eaf0;
+    --primary: #635bff;
+    --secondary: #00d4ff;
+    --grad: linear-gradient(135deg, #635bff 0%, #00d4ff 100%);
+    --grad-soft: linear-gradient(135deg, #635bff11 0%, #00d4ff11 100%);
+    --r: 14px;
+    --r-lg: 22px;
+    --r-xl: 32px;
+    --r-pill: 999px;
+    --max-w: 1100px;
+    --ease: cubic-bezier(0.16, 1, 0.3, 1);
+    --shadow-md: 0 2px 8px rgba(10,21,48,0.06), 0 16px 40px -8px rgba(10,21,48,0.10);
+    --shadow-lg: 0 24px 80px -16px #635bff40, 0 8px 24px rgba(10,21,48,0.08);
+}
 
-        body {
-            font-family: 'Assistant', system-ui, sans-serif;
-            background: var(--paper);
-            color: var(--ink);
-            line-height: 1.55;
-            font-weight: 400;
-            overflow-x: hidden;
-            background-image:
-                url("data:image/svg+xml,%3Csvg viewBox='0 0 220 220' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.08'/%3E%3C/svg%3E");
-        }
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+    font-family: 'Heebo', system-ui, sans-serif;
+    background: var(--bg);
+    color: var(--ink);
+    direction: rtl;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+}
+a { color: inherit; text-decoration: none; }
 
-        a { text-decoration: none; color: inherit; }
-        ul { list-style: none; }
+.nav {
+    position: sticky; top: 0; z-index: 50;
+    background: rgba(250,250,254,0.85);
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--line);
+}
+.nav__inner {
+    max-width: var(--max-w);
+    margin: 0 auto;
+    padding: 16px 28px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.brand {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    font-weight: 800;
+    font-size: 1.05rem;
+}
+.brand__mark {
+    width: 26px; height: 26px;
+    border-radius: 8px;
+    background: linear-gradient(135deg, #635bff, #00d4ff, #ff6b9c);
+    position: relative;
+}
+.brand__mark::before {
+    content: ""; position: absolute; inset: 5px; background: var(--bg); border-radius: 4px;
+}
+.brand__mark::after {
+    content: ""; position: absolute; inset: 9px; background: linear-gradient(135deg, #635bff, #ff6b9c); border-radius: 2px;
+}
+.back-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    color: var(--ink-soft);
+    font-weight: 500;
+    font-size: 0.92rem;
+    padding: 8px 14px;
+    border-radius: var(--r-pill);
+    border: 1px solid var(--line);
+    transition: all 220ms var(--ease);
+}
+.back-link:hover { background: var(--ink); color: white; border-color: var(--ink); }
 
-        .container { max-width: 1240px; margin: 0 auto; padding: 0 32px; }
+/* Hero */
+.hero {
+    padding: 80px 28px 64px;
+    max-width: var(--max-w);
+    margin: 0 auto;
+    position: relative;
+}
+.hero__category {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.82rem;
+    letter-spacing: 0.14em;
+    color: var(--primary);
+    font-weight: 700;
+    margin-bottom: 20px;
+}
+.hero__category__dot {
+    width: 8px; height: 8px; border-radius: 50%;
+    background: var(--primary);
+    box-shadow: 0 0 0 4px #635bff22;
+}
+.hero__name {
+    font-weight: 900;
+    font-size: clamp(2.5rem, 6vw, 4.6rem);
+    line-height: 1;
+    letter-spacing: -0.035em;
+    margin-bottom: 12px;
+}
+.hero__name__grad {
+    background: var(--grad);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+}
+.hero__hebrew {
+    color: var(--ink-soft);
+    font-size: 1.2rem;
+    margin-bottom: 28px;
+    font-weight: 500;
+}
+.hero__tagline {
+    font-size: clamp(1.15rem, 1.8vw, 1.5rem);
+    color: var(--ink);
+    margin-bottom: 24px;
+    font-weight: 500;
+    max-width: 28ch;
+    line-height: 1.35;
+}
+.hero__body {
+    font-size: 1.05rem;
+    color: var(--ink-soft);
+    max-width: 60ch;
+    margin-bottom: 36px;
+}
+.hero__status {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 14px;
+    border-radius: var(--r-pill);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    margin-bottom: 32px;
+}
+.hero__status--live { background: #d1fae5; color: #047857; }
+.hero__status--beta { background: #fef3c7; color: #92400e; }
+.hero__status--soon { background: var(--bg-soft); color: var(--ink-mute); }
+.hero__actions {
+    display: inline-flex;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+.btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 16px 30px;
+    border-radius: var(--r-pill);
+    font-family: inherit;
+    font-weight: 700;
+    font-size: 1rem;
+    border: 1px solid transparent;
+    transition: all 240ms var(--ease);
+    cursor: pointer;
+}
+.btn--primary {
+    background: var(--grad);
+    color: white;
+    box-shadow: var(--shadow-md);
+}
+.btn--primary:hover { transform: translateY(-2px); box-shadow: var(--shadow-lg); }
+.btn--ghost {
+    background: var(--surface);
+    border-color: var(--line);
+    color: var(--ink);
+}
+.btn--ghost:hover { border-color: var(--ink); transform: translateY(-2px); }
 
-        .display { font-family: 'Frank Ruhl Libre', 'Assistant', serif; }
-        .mono    { font-family: 'JetBrains Mono', monospace; }
+/* Flow visualization */
+.flow {
+    max-width: var(--max-w);
+    margin: 0 auto 40px;
+    padding: 0 28px;
+}
+.flow__grid {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr auto 1fr;
+    gap: 16px;
+    align-items: stretch;
+}
+@media (max-width: 800px) {
+    .flow__grid { grid-template-columns: 1fr; }
+    .flow__arrow { transform: rotate(90deg); justify-self: center; }
+}
+.flow__step {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: var(--r-lg);
+    padding: 32px 28px;
+    position: relative;
+    overflow: hidden;
+    transition: all 340ms var(--ease);
+}
+.flow__step:hover {
+    transform: translateY(-4px);
+    border-color: var(--primary);
+    box-shadow: var(--shadow-lg);
+}
+.flow__step--out {
+    background: var(--grad-soft);
+    border-color: #635bff33;
+}
+.flow__icon { font-size: 2.4rem; margin-bottom: 16px; }
+.flow__label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.74rem;
+    letter-spacing: 0.14em;
+    color: var(--ink-mute);
+    text-transform: uppercase;
+    margin-bottom: 10px;
+    font-weight: 600;
+}
+.flow__step--out .flow__label { color: var(--primary); }
+.flow__title {
+    font-weight: 800;
+    font-size: 1.2rem;
+    letter-spacing: -0.01em;
+    margin-bottom: 8px;
+}
+.flow__desc {
+    color: var(--ink-soft);
+    font-size: 0.95rem;
+}
+.flow__arrow {
+    color: var(--primary);
+    font-size: 2rem;
+    align-self: center;
+}
 
-        /* ─── TOP MARQUEE ───────────────────────────── */
-        .marquee {
-            background: var(--ink);
-            color: var(--paper);
-            padding: 11px 0;
-            overflow: hidden;
-            position: relative;
-            z-index: 50;
-        }
-        .marquee-track {
-            display: flex;
-            width: max-content;
-            white-space: nowrap;
-            animation: scroll 42s linear infinite;
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 0.78rem;
-            letter-spacing: 0.18em;
-            text-transform: uppercase;
-            font-weight: 700;
-        }
-        .marquee-track span { padding: 0 26px; }
-        .marquee-track .dot { color: var(--stamp); padding: 0; }
-        @keyframes scroll {
-            from { transform: translateX(0); }
-            to   { transform: translateX(-50%); }
-        }
+/* Details */
+.details {
+    max-width: var(--max-w);
+    margin: 64px auto;
+    padding: 0 28px;
+}
+.details__head {
+    margin-bottom: 36px;
+}
+.details__eyebrow {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.78rem;
+    letter-spacing: 0.18em;
+    color: var(--primary);
+    text-transform: uppercase;
+    font-weight: 700;
+    margin-bottom: 12px;
+}
+.details__title {
+    font-weight: 900;
+    font-size: clamp(1.6rem, 3.5vw, 2.6rem);
+    letter-spacing: -0.025em;
+    line-height: 1.1;
+}
+.details__grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 20px;
+}
+.detail {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: var(--r-lg);
+    padding: 28px;
+    transition: all 320ms var(--ease);
+}
+.detail:hover {
+    border-color: var(--primary);
+    transform: translateY(-3px);
+    box-shadow: var(--shadow-md);
+}
+.detail__title {
+    font-weight: 800;
+    font-size: 1.1rem;
+    margin-bottom: 8px;
+    color: var(--ink);
+}
+.detail__desc {
+    color: var(--ink-soft);
+    font-size: 0.95rem;
+}
 
-        /* ─── NAV ───────────────────────────────────── */
-        nav {
-            padding: 22px 0;
-            border-bottom: 1px solid var(--rule);
-            background: var(--paper);
-            position: sticky;
-            top: 0;
-            z-index: 40;
-        }
-        nav .container { display: flex; align-items: center; justify-content: space-between; gap: 20px; }
-        .nav-logo { display: flex; align-items: baseline; gap: 14px; }
-        .nav-logo .mark {
-            font-family: 'Frank Ruhl Libre', serif;
-            font-weight: 900;
-            font-size: 1.55rem;
-            letter-spacing: -0.02em;
-        }
-        .nav-logo .sub {
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 0.7rem;
-            letter-spacing: 0.16em;
-            text-transform: uppercase;
-            color: var(--ink-light);
-        }
-        .nav-cta {
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 0.78rem;
-            letter-spacing: 0.16em;
-            text-transform: uppercase;
-            font-weight: 700;
-            padding: 12px 22px;
-            background: var(--ink);
-            color: var(--paper);
-            border: 2px solid var(--ink);
-            transition: background 0.15s ease, border-color 0.15s ease, transform 0.15s ease;
-        }
-        .nav-cta:hover {
-            background: var(--stamp);
-            border-color: var(--stamp);
-            transform: translate(-1px, -1px);
-        }
+/* Pricing */
+.pricing {
+    max-width: var(--max-w);
+    margin: 0 auto;
+    padding: 0 28px 80px;
+}
+.pricing__card {
+    background: linear-gradient(135deg, #0a0a1f 0%, #1a1a4d 100%);
+    color: white;
+    padding: 56px 48px;
+    border-radius: var(--r-xl);
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+}
+.pricing__card::before {
+    content: "";
+    position: absolute;
+    top: -50%; right: -20%;
+    width: 80%; height: 200%;
+    background: radial-gradient(circle, #635bff88, transparent 60%);
+    pointer-events: none;
+}
+.pricing__card > * { position: relative; z-index: 1; }
+.pricing__eyebrow {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.82rem;
+    letter-spacing: 0.16em;
+    color: rgba(255,255,255,0.6);
+    text-transform: uppercase;
+    margin-bottom: 16px;
+    font-weight: 600;
+}
+.pricing__text {
+    font-size: clamp(1.2rem, 2.5vw, 1.8rem);
+    font-weight: 700;
+    margin-bottom: 32px;
+    letter-spacing: -0.015em;
+    max-width: 40ch;
+    margin-inline: auto;
+}
+.pricing__actions {
+    display: inline-flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+.pricing__card .btn--primary {
+    background: white;
+    color: var(--ink);
+}
+.pricing__card .btn--primary:hover {
+    background: var(--grad);
+    color: white;
+}
+.pricing__card .btn--ghost {
+    background: rgba(255,255,255,0.08);
+    border-color: rgba(255,255,255,0.25);
+    color: white;
+}
+.pricing__card .btn--ghost:hover {
+    background: rgba(255,255,255,0.16);
+}
 
-        /* ─── HERO ──────────────────────────────────── */
-        .hero {
-            padding: 96px 0 88px;
-            position: relative;
-            border-bottom: 1px dashed var(--rule);
-        }
-        .hero-grid {
-            display: grid;
-            grid-template-columns: 1.1fr 0.9fr;
-            gap: 80px;
-            align-items: center;
-        }
-        .hero-tag {
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 0.78rem;
-            letter-spacing: 0.2em;
-            text-transform: uppercase;
-            color: var(--stamp);
-            font-weight: 700;
-            margin-bottom: 30px;
-            display: flex;
-            align-items: center;
-            gap: 14px;
-        }
-        .hero-tag::before {
-            content: "";
-            width: 42px;
-            height: 2px;
-            background: var(--stamp);
-        }
-        .hero h1 {
-            font-family: 'Frank Ruhl Libre', serif;
-            font-size: clamp(2.8rem, 6.4vw, 5.4rem);
-            font-weight: 900;
-            line-height: 0.96;
-            letter-spacing: -0.025em;
-            margin-bottom: 32px;
-        }
-        .hero h1 .mark {
-            display: inline-block;
-            position: relative;
-            color: var(--stamp);
-            font-style: italic;
-            padding: 0 10px;
-        }
-        .hero h1 .mark::after {
-            content: "";
-            position: absolute;
-            inset: 6px -2px 4px -2px;
-            border: 2.5px solid var(--stamp);
-            border-radius: 56% 8% 52% 8% / 50% 12% 48% 12%;
-            transform: rotate(-1.2deg);
-            pointer-events: none;
-        }
-        .hero p {
-            font-size: 1.18rem;
-            color: var(--ink-light);
-            max-width: 480px;
-            margin-bottom: 44px;
-            line-height: 1.6;
-        }
-        .hero-cta {
-            display: inline-flex;
-            align-items: center;
-            gap: 18px;
-            font-family: 'Frank Ruhl Libre', serif;
-            font-weight: 700;
-            font-size: 1.25rem;
-            padding: 22px 44px;
-            background: var(--ink);
-            color: var(--paper);
-            border: 2px solid var(--ink);
-            transition: background 0.18s ease, border-color 0.18s ease, transform 0.18s ease;
-        }
-        .hero-cta::after {
-            content: "←";
-            font-family: 'JetBrains Mono', monospace;
-            font-weight: 700;
-        }
-        .hero-cta:hover {
-            background: var(--stamp);
-            border-color: var(--stamp);
-            transform: translate(2px, -2px);
-        }
-        .hero-meta {
-            margin-top: 28px;
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 0.74rem;
-            color: var(--ink-light);
-            letter-spacing: 0.08em;
-            display: flex;
-            gap: 16px;
-            flex-wrap: wrap;
-        }
-        .hero-meta span { padding-left: 16px; border-left: 1px solid var(--rule); }
-        .hero-meta span:last-child { border-left: none; }
-
-        /* ─── RECEIPT MOCKUP ────────────────────────── */
-        .receipt-wrap { display: flex; justify-content: center; }
-        .receipt {
-            background: var(--paper-light);
-            box-shadow:
-                0 1px 0 rgba(0,0,0,0.03),
-                0 18px 44px -14px rgba(0,0,0,0.22),
-                0 4px 14px rgba(0,0,0,0.08);
-            padding: 38px 32px 30px;
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 0.82rem;
-            color: var(--ink);
-            position: relative;
-            transform: rotate(1.5deg);
-            width: 100%;
-            max-width: 380px;
-            background-image:
-                repeating-linear-gradient(0deg, rgba(0,0,0,0.012) 0px, rgba(0,0,0,0.012) 1px, transparent 1px, transparent 24px);
-        }
-        .receipt::before, .receipt::after {
-            content: "";
-            position: absolute;
-            left: 0;
-            right: 0;
-            height: 14px;
-            background:
-                radial-gradient(circle at 7px 7px, var(--paper) 5px, transparent 5.5px);
-            background-size: 14px 14px;
-            background-color: var(--paper-light);
-        }
-        .receipt::before { top: -7px; }
-        .receipt::after  { bottom: -7px; }
-        .receipt-head {
-            text-align: center;
-            border-bottom: 1px dashed var(--rule);
-            padding-bottom: 14px;
-            margin-bottom: 18px;
-        }
-        .receipt-head h4 {
-            font-family: 'Frank Ruhl Libre', serif;
-            font-size: 1.18rem;
-            font-weight: 900;
-            margin-bottom: 4px;
-        }
-        .receipt-head .meta {
-            font-size: 0.7rem;
-            letter-spacing: 0.1em;
-            text-transform: uppercase;
-            color: var(--ink-light);
-        }
-        .receipt-row {
-            display: flex;
-            justify-content: space-between;
-            padding: 7px 0;
-            border-bottom: 1px dotted rgba(0,0,0,0.18);
-            font-size: 0.78rem;
-        }
-        .receipt-row .label { color: var(--ink-light); }
-        .receipt-row .value { font-weight: 700; }
-        .receipt-total {
-            margin-top: 14px;
-            padding-top: 14px;
-            border-top: 2px solid var(--ink);
-            display: flex;
-            justify-content: space-between;
-            font-family: 'Frank Ruhl Libre', serif;
-            font-size: 1.08rem;
-            font-weight: 900;
-        }
-        .receipt-stamp {
-            position: absolute;
-            top: 28%;
-            left: -22px;
-            background: var(--stamp);
-            color: var(--paper-light);
-            font-family: 'Frank Ruhl Libre', serif;
-            font-weight: 900;
-            font-size: 1.05rem;
-            padding: 8px 18px;
-            transform: rotate(-12deg);
-            letter-spacing: 0.04em;
-            border: 2px dashed var(--paper-light);
-            box-shadow: inset 0 0 0 1px var(--stamp), 0 4px 14px rgba(200,50,30,0.25);
-        }
-        .receipt-foot {
-            text-align: center;
-            margin-top: 18px;
-            padding-top: 14px;
-            border-top: 1px dashed var(--rule);
-            font-size: 0.66rem;
-            letter-spacing: 0.12em;
-            color: var(--ink-light);
-        }
-        .receipt-foot .arrow { color: var(--stamp); font-weight: 700; }
-
-        /* ─── SECTION FRAMING ───────────────────────── */
-        section { padding: 120px 0; position: relative; }
-        .section-head {
-            display: flex;
-            align-items: flex-end;
-            justify-content: space-between;
-            gap: 40px;
-            margin-bottom: 80px;
-            padding-bottom: 28px;
-            border-bottom: 1px solid var(--rule);
-        }
-        .section-eyebrow {
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 0.78rem;
-            letter-spacing: 0.2em;
-            text-transform: uppercase;
-            color: var(--stamp);
-            font-weight: 700;
-        }
-        .section-title {
-            font-family: 'Frank Ruhl Libre', serif;
-            font-size: clamp(2.2rem, 4.8vw, 3.8rem);
-            font-weight: 900;
-            line-height: 1;
-            letter-spacing: -0.022em;
-            margin-top: 14px;
-            max-width: 720px;
-        }
-        .section-meta {
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 0.74rem;
-            color: var(--ink-light);
-            letter-spacing: 0.08em;
-            text-align: left;
-            line-height: 1.85;
-            min-width: 130px;
-            white-space: pre;
-        }
-
-        /* ─── FEATURES — EDITORIAL LIST ─────────────── */
-        .feat-list { border-top: 1px dashed var(--rule); }
-        .feat-row {
-            display: grid;
-            grid-template-columns: 90px 1.1fr 1.4fr 90px;
-            gap: 36px;
-            align-items: baseline;
-            padding: 32px 0;
-            border-bottom: 1px dashed var(--rule);
-            transition: padding 0.3s ease, background 0.3s ease;
-        }
-        .feat-row:hover {
-            padding-right: 22px;
-            padding-left: 22px;
-            background: linear-gradient(90deg, var(--paper-deep) 0%, transparent 100%);
-        }
-        .feat-num {
-            font-family: 'Frank Ruhl Libre', serif;
-            font-size: 2.7rem;
-            font-weight: 900;
-            color: var(--stamp);
-            line-height: 1;
-        }
-        .feat-title {
-            font-family: 'Frank Ruhl Libre', serif;
-            font-size: 1.7rem;
-            font-weight: 900;
-            line-height: 1.1;
-            letter-spacing: -0.012em;
-        }
-        .feat-desc {
-            font-size: 1rem;
-            color: var(--ink-light);
-            line-height: 1.55;
-        }
-        .feat-tag {
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 0.7rem;
-            letter-spacing: 0.14em;
-            text-transform: uppercase;
-            color: var(--ink-light);
-            text-align: left;
-        }
-
-        /* ─── HOW IT WORKS ──────────────────────────── */
-        .steps-bg {
-            background: var(--paper-deep);
-            border-top: 2px solid var(--rule);
-            border-bottom: 2px solid var(--rule);
-        }
-        .steps-grid {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            border: 2px solid var(--ink);
-            background: var(--paper);
-        }
-        .step {
-            padding: 42px 30px;
-            border-left: 1px solid var(--ink);
-            position: relative;
-            transition: background 0.25s ease;
-        }
-        .step:last-child { border-left: none; }
-        .step:hover { background: var(--paper-light); }
-        .step-num {
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 0.74rem;
-            letter-spacing: 0.18em;
-            color: var(--stamp);
-            font-weight: 700;
-            margin-bottom: 22px;
-        }
-        .step-icon { margin-bottom: 26px; color: var(--ink); }
-        .step h3 {
-            font-family: 'Frank Ruhl Libre', serif;
-            font-size: 1.45rem;
-            font-weight: 900;
-            margin-bottom: 12px;
-            line-height: 1.1;
-            letter-spacing: -0.012em;
-        }
-        .step p {
-            font-size: 0.95rem;
-            color: var(--ink-light);
-            line-height: 1.55;
-        }
-
-        /* ─── PRICING — RECEIPT STYLE ───────────────── */
-        .price-wrap { display: flex; justify-content: center; }
-        .price-receipt {
-            background: var(--paper-light);
-            max-width: 460px;
-            width: 100%;
-            padding: 46px 42px 36px;
-            position: relative;
-            font-family: 'JetBrains Mono', monospace;
-            box-shadow: 0 32px 64px -22px rgba(0,0,0,0.24), 0 6px 18px rgba(0,0,0,0.08);
-        }
-        .price-receipt::before, .price-receipt::after {
-            content: "";
-            position: absolute;
-            left: 0;
-            right: 0;
-            height: 16px;
-            background: radial-gradient(circle at 8px 8px, var(--paper) 6px, transparent 6.5px);
-            background-size: 16px 16px;
-            background-color: var(--paper-light);
-        }
-        .price-receipt::before { top: -8px; }
-        .price-receipt::after  { bottom: -8px; }
-        .price-receipt h3 {
-            font-family: 'Frank Ruhl Libre', serif;
-            font-size: 1.6rem;
-            font-weight: 900;
-            text-align: center;
-            margin-bottom: 6px;
-            letter-spacing: -0.01em;
-        }
-        .price-receipt .receipt-no {
-            text-align: center;
-            font-size: 0.7rem;
-            letter-spacing: 0.16em;
-            text-transform: uppercase;
-            color: var(--ink-light);
-            margin-bottom: 22px;
-            padding-bottom: 18px;
-            border-bottom: 1px dashed var(--rule);
-        }
-        .price-receipt ul { margin-bottom: 22px; }
-        .price-receipt li {
-            display: flex;
-            justify-content: space-between;
-            align-items: baseline;
-            padding: 11px 0;
-            border-bottom: 1px dotted rgba(0,0,0,0.18);
-            font-size: 0.86rem;
-        }
-        .price-receipt li:last-child { border: none; }
-        .price-receipt li .item {
-            font-family: 'Assistant', sans-serif;
-            font-weight: 600;
-        }
-        .price-receipt li .cost {
-            font-weight: 700;
-            color: var(--ink-light);
-        }
-        .price-receipt li .cost.free { color: var(--stamp); }
-        .price-receipt .total-row {
-            display: flex;
-            justify-content: space-between;
-            align-items: baseline;
-            padding-top: 22px;
-            border-top: 2px solid var(--ink);
-            font-family: 'Frank Ruhl Libre', serif;
-            font-weight: 900;
-        }
-        .price-receipt .total-row .total-label { font-size: 1.2rem; }
-        .price-receipt .total-row .total-amt {
-            font-size: 2.4rem;
-            color: var(--stamp);
-            letter-spacing: -0.02em;
-        }
-        .price-receipt .price-sub {
-            text-align: center;
-            margin-top: 14px;
-            font-size: 0.7rem;
-            letter-spacing: 0.12em;
-            text-transform: uppercase;
-            color: var(--ink-light);
-        }
-        .price-cta {
-            display: block;
-            margin-top: 28px;
-            padding: 19px 18px;
-            text-align: center;
-            background: var(--ink);
-            color: var(--paper);
-            font-family: 'Frank Ruhl Libre', serif;
-            font-weight: 700;
-            font-size: 1.18rem;
-            border: 2px solid var(--ink);
-            transition: background 0.18s ease, border-color 0.18s ease;
-        }
-        .price-cta:hover { background: var(--stamp); border-color: var(--stamp); }
-        .price-stamp {
-            position: absolute;
-            top: 56px;
-            right: -32px;
-            background: var(--stamp);
-            color: var(--paper-light);
-            font-family: 'Frank Ruhl Libre', serif;
-            font-weight: 900;
-            font-size: 0.95rem;
-            padding: 10px 20px;
-            transform: rotate(8deg);
-            border: 2px dashed var(--paper-light);
-            box-shadow: inset 0 0 0 1px var(--stamp), 0 6px 18px rgba(200,50,30,0.28);
-            letter-spacing: 0.04em;
-        }
-
-        /* ─── FINAL CTA ─────────────────────────────── */
-        .final {
-            background: var(--ink);
-            color: var(--paper);
-            padding: 150px 0;
-            position: relative;
-            overflow: hidden;
-        }
-        .final::before {
-            content: "";
-            position: absolute;
-            inset: 0;
-            background-image:
-                radial-gradient(ellipse at 20% 25%, rgba(200, 50, 30, 0.22) 0%, transparent 38%),
-                radial-gradient(ellipse at 80% 75%, rgba(200, 50, 30, 0.14) 0%, transparent 42%);
-            pointer-events: none;
-        }
-        .final::after {
-            content: "";
-            position: absolute;
-            inset: 0;
-            background-image:
-                url("data:image/svg+xml,%3Csvg viewBox='0 0 220 220' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.06'/%3E%3C/svg%3E");
-            pointer-events: none;
-        }
-        .final-content {
-            text-align: center;
-            position: relative;
-            z-index: 1;
-        }
-        .final-eyebrow {
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 0.8rem;
-            letter-spacing: 0.22em;
-            text-transform: uppercase;
-            color: var(--stamp);
-            margin-bottom: 30px;
-            font-weight: 700;
-        }
-        .final h2 {
-            font-family: 'Frank Ruhl Libre', serif;
-            font-size: clamp(2.8rem, 7.2vw, 5.6rem);
-            font-weight: 900;
-            line-height: 0.94;
-            letter-spacing: -0.025em;
-            margin-bottom: 36px;
-        }
-        .final h2 .accent {
-            color: var(--stamp);
-            font-style: italic;
-        }
-        .final p {
-            font-size: 1.18rem;
-            max-width: 540px;
-            margin: 0 auto 48px;
-            color: rgba(241, 235, 220, 0.72);
-            line-height: 1.6;
-        }
-        .final-cta {
-            display: inline-flex;
-            align-items: center;
-            gap: 18px;
-            background: var(--paper);
-            color: var(--ink);
-            padding: 24px 52px;
-            font-family: 'Frank Ruhl Libre', serif;
-            font-weight: 900;
-            font-size: 1.4rem;
-            border: 2px solid var(--paper);
-            transition: background 0.2s ease, border-color 0.2s ease, color 0.2s ease, transform 0.2s ease;
-        }
-        .final-cta::after {
-            content: "←";
-            font-family: 'JetBrains Mono', monospace;
-        }
-        .final-cta:hover {
-            background: var(--stamp);
-            border-color: var(--stamp);
-            color: var(--paper);
-            transform: translate(2px, -2px);
-        }
-        .final-note {
-            margin-top: 28px;
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 0.78rem;
-            letter-spacing: 0.12em;
-            color: rgba(241, 235, 220, 0.5);
-            text-transform: uppercase;
-        }
-
-        /* ─── FOOTER ────────────────────────────────── */
-        footer {
-            background: var(--ink);
-            color: rgba(241, 235, 220, 0.62);
-            padding: 36px 0;
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 0.78rem;
-            letter-spacing: 0.08em;
-            border-top: 1px solid rgba(241, 235, 220, 0.12);
-        }
-        footer .container {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            gap: 24px;
-            flex-wrap: wrap;
-        }
-        footer a {
-            color: var(--paper);
-            border-bottom: 1px solid var(--stamp);
-            padding-bottom: 1px;
-            transition: color 0.15s ease;
-        }
-        footer a:hover { color: var(--stamp); }
-
-        /* ─── PAGE LOAD ANIMATION ───────────────────── */
-        .reveal {
-            opacity: 0;
-            transform: translateY(22px);
-            animation: reveal 0.95s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
-        }
-        .reveal-1 { animation-delay: 0.15s; }
-        .reveal-2 { animation-delay: 0.30s; }
-        .reveal-3 { animation-delay: 0.45s; }
-        .reveal-4 { animation-delay: 0.60s; }
-        .reveal-5 { animation-delay: 0.75s; }
-        .receipt-reveal {
-            opacity: 0;
-            transform: rotate(1.5deg) translateY(36px);
-            animation: receipt-in 1.05s cubic-bezier(0.2, 0.85, 0.2, 1) 0.55s forwards;
-        }
-        @keyframes reveal {
-            to { opacity: 1; transform: translateY(0); }
-        }
-        @keyframes receipt-in {
-            to { opacity: 1; transform: rotate(1.5deg) translateY(0); }
-        }
-
-        /* ─── MOBILE ────────────────────────────────── */
-        @media (max-width: 920px) {
-            .hero { padding: 64px 0 72px; }
-            .hero-grid { grid-template-columns: 1fr; gap: 64px; }
-            .receipt { transform: rotate(0); margin: 0 auto; }
-            .receipt-stamp { top: 18%; left: -16px; }
-            .feat-row {
-                grid-template-columns: 1fr;
-                gap: 8px;
-                padding: 26px 0;
-            }
-            .feat-tag { text-align: right; }
-            .steps-grid { grid-template-columns: 1fr; }
-            .step { border-left: none; border-bottom: 1px solid var(--ink); }
-            .step:last-child { border-bottom: none; }
-            .section-head { flex-direction: column; align-items: flex-start; gap: 14px; }
-            .section-meta { text-align: right; min-width: 0; }
-            section { padding: 80px 0; }
-            .container { padding: 0 22px; }
-            .nav-logo .sub { display: none; }
-            .final { padding: 100px 0; }
-            .price-receipt { padding: 38px 26px 30px; }
-            .price-stamp { right: -16px; top: 36px; font-size: 0.85rem; padding: 8px 14px; }
-        }
-    </style>
+/* Footer */
+.footer {
+    padding: 32px 28px;
+    border-top: 1px solid var(--line);
+    color: var(--ink-soft);
+    font-size: 0.88rem;
+}
+.footer__inner {
+    max-width: var(--max-w);
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 16px;
+    align-items: center;
+}
+</style>
 </head>
 <body>
 
-<!-- TOP MARQUEE -->
-<div class="marquee" aria-hidden="true">
-    <div class="marquee-track">
-        <span>Expense Bridge</span><span class="dot">✱</span>
-        <span>סורק קבלות אוטומטי</span><span class="dot">✱</span>
-        <span>10 קבלות חינם</span><span class="dot">✱</span>
-        <span>פועל בעברית</span><span class="dot">✱</span>
-        <span>By B Automations</span><span class="dot">✱</span>
-        <span>Expense Bridge</span><span class="dot">✱</span>
-        <span>סורק קבלות אוטומטי</span><span class="dot">✱</span>
-        <span>10 קבלות חינם</span><span class="dot">✱</span>
-        <span>פועל בעברית</span><span class="dot">✱</span>
-        <span>By B Automations</span><span class="dot">✱</span>
+<header class="nav">
+    <div class="nav__inner">
+        <a href="../" class="brand">
+            <span class="brand__mark"></span>
+            B Automations
+        </a>
+        <a href="../#platform" class="back-link">
+            <span>→</span>
+            <span>חזרה לפלטפורמה</span>
+        </a>
     </div>
-</div>
+</header>
 
-<!-- NAV -->
-<nav>
-    <div class="container">
-        <div class="nav-logo">
-            <span class="mark">Expense Bridge</span>
-            <span class="sub">No. 001 / B—Automations</span>
-        </div>
-        <a href="https://t.me/bautomatiosbot" class="nav-cta">פתח בטלגרם</a>
-    </div>
-</nav>
-
-<!-- HERO -->
 <section class="hero">
-    <div class="container">
-        <div class="hero-grid">
-            <div>
-                <div class="hero-tag reveal reveal-1">Receipts → Sheets · In Hebrew</div>
-                <h1 class="reveal reveal-2">
-                    כל הקבלות שלך,<br>
-                    <span class="mark">מסודרות.</span><br>
-                    אוטומטית.
-                </h1>
-                <p class="reveal reveal-3">
-                    שלח תמונה של קבלה לבוט בטלגרם. ה-AI מזהה את הסכום, התאריך ובית העסק — ושומר הכל בגוגל שיטס שלך, בלי שתצטרך להקליד שורה אחת.
-                </p>
-                <a href="https://t.me/bautomatiosbot" class="hero-cta reveal reveal-4">פתח בטלגרם</a>
-                <div class="hero-meta reveal reveal-5">
-                    <span>EST. 2026</span>
-                    <span>TEL AVIV</span>
-                    <span>VOL. 01</span>
-                </div>
-            </div>
+    <div class="hero__category">
+        <span class="hero__category__dot"></span>
+        FINANCE
+    </div>
+    <h1 class="hero__name"><span class="hero__name__grad">📸 Expense Bridge</span></h1>
+    <div class="hero__hebrew">קבלות → אקסל אוטומטית</div>
+    <div class="hero__status hero__status--live">● LIVE</div>
+    <p class="hero__tagline">תמונת קבלה ב-WhatsApp → שורה מסודרת באקסל. תוך שניות. בעברית.</p>
+    <p class="hero__body">הבוט הראשון של B Automations שכבר חי בייצור. עוסקים זעירים, נציגי שטח, ומנהלי משק בית — שולחים תמונת קבלה ומקבלים שורה מובנית בגיליון: תאריך, עסק, סכום, קטגוריה, מע"מ. 10 קבלות חינם.</p>
+    <div class="hero__actions">
+        <a href="https://t.me/bautomatiosbot" target="_blank" rel="noopener" class="btn btn--primary">פתח בטלגרם <span style="transform:scaleX(-1);display:inline-block">→</span></a><a href="https://wa.me/972524400000" class="btn btn--ghost">WhatsApp</a>
+    </div>
+</section>
 
-            <div class="receipt-wrap">
-                <div class="receipt receipt-reveal" aria-hidden="true">
-                    <div class="receipt-stamp">מאומת</div>
-                    <div class="receipt-head">
-                        <h4>קפה לאנדוור</h4>
-                        <div class="meta">RCPT #4471 · 14:32 · TLV</div>
-                    </div>
-                    <div class="receipt-row"><span class="label">תאריך</span><span class="value">10/05/26</span></div>
-                    <div class="receipt-row"><span class="label">בית עסק</span><span class="value">קפה לאנדוור</span></div>
-                    <div class="receipt-row"><span class="label">קטגוריה</span><span class="value">אוכל ושתייה</span></div>
-                    <div class="receipt-row"><span class="label">מטבע</span><span class="value">ILS · ₪</span></div>
-                    <div class="receipt-row"><span class="label">מע״מ (17%)</span><span class="value">₪7.85</span></div>
-                    <div class="receipt-total">
-                        <span>סה״כ</span>
-                        <span>₪46.00</span>
-                    </div>
-                    <div class="receipt-foot">
-                        <span class="arrow">→</span> SAVED · GOOGLE SHEETS · ROW 142
-                    </div>
-                </div>
-            </div>
+<section class="flow">
+    <div class="flow__grid">
+        <div class="flow__step">
+            <div class="flow__icon">📸</div>
+            <div class="flow__label">01 · INPUT</div>
+            <div class="flow__title">תמונת קבלה</div>
+            <p class="flow__desc">צילום של קבלה — מתחנת דלק, סופר, מסעדה, חנות. כל פורמט. גם תמונה זוויתית או מטושטשת.</p>
+        </div>
+        <div class="flow__arrow">←</div>
+        <div class="flow__step">
+            <div class="flow__icon">🤖</div>
+            <div class="flow__label">02 · PROCESS</div>
+            <div class="flow__title">Claude Vision</div>
+            <p class="flow__desc">AI מזהה את כל השדות: תאריך, שם העסק, סכום כולל, מע"מ, קטגוריה (13 קטגוריות מובנות), אמצעי תשלום.</p>
+        </div>
+        <div class="flow__arrow">←</div>
+        <div class="flow__step flow__step--out">
+            <div class="flow__icon">📊</div>
+            <div class="flow__label">03 · OUTPUT</div>
+            <div class="flow__title">שורה ב-Sheet שלך</div>
+            <p class="flow__desc">השורה נכנסת לגיליון בחשבון Google שלך, מאורגנת לפי חודש. כולל קישור לתמונת הקבלה המקורית.</p>
         </div>
     </div>
 </section>
 
-<!-- FEATURES -->
-<section>
-    <div class="container">
-        <div class="section-head">
-            <div>
-                <div class="section-eyebrow">/ Capabilities</div>
-                <h2 class="section-title">מה הבוט יודע<br>לעשות לבד.</h2>
-            </div>
-            <div class="section-meta">§02&#10;FEATURES&#10;—————&#10;07 ITEMS</div>
-        </div>
-
-        <ul class="feat-list">
-            <li class="feat-row">
-                <div class="feat-num">01</div>
-                <div class="feat-title">סריקת קבלות חכמה</div>
-                <div class="feat-desc">AI שמזהה טקסט, סכומים ופרטים מכל סוג קבלה — גם בעברית, גם בכתב יד, גם בתמונות עקומות.</div>
-                <div class="feat-tag">/ OCR + LLM</div>
-            </li>
-            <li class="feat-row">
-                <div class="feat-num">02</div>
-                <div class="feat-title">מיון אוטומטי לקטגוריות</div>
-                <div class="feat-desc">אוכל, תחבורה, משרד, דלק, אירוח. המערכת לומדת את ההעדפות שלך לאורך זמן.</div>
-                <div class="feat-tag">/ AUTO-TAG</div>
-            </li>
-            <li class="feat-row">
-                <div class="feat-num">03</div>
-                <div class="feat-title">סנכרון לגוגל שיטס</div>
-                <div class="feat-desc">כל קבלה נשמרת ישירות בגיליון שלך — מסודרת בעמודות, מוכנה לרואה החשבון בלי שורת קוד.</div>
-                <div class="feat-tag">/ G-SHEETS</div>
-            </li>
-            <li class="feat-row">
-                <div class="feat-num">04</div>
-                <div class="feat-title">תמיכה מלאה בעברית</div>
-                <div class="feat-desc">הבוט מבין עברית מדוברת, מזהה קבלות ישראליות, ועובד עם מע״מ ומספרי עוסק כמו שצריך.</div>
-                <div class="feat-tag">/ HE-FIRST</div>
-            </li>
-            <li class="feat-row">
-                <div class="feat-num">05</div>
-                <div class="feat-title">מטבעות מרובים</div>
-                <div class="feat-desc">שקלים, דולרים, יורו, ליש״ט. הבוט מזהה את המטבע אוטומטית ומשמר את הנתון המקורי.</div>
-                <div class="feat-tag">/ ILS · USD · EUR</div>
-            </li>
-            <li class="feat-row">
-                <div class="feat-num">06</div>
-                <div class="feat-title">בלי אפליקציה. בלי הרשמה.</div>
-                <div class="feat-desc">פותחים את טלגרם, שולחים תמונה, מקבלים אישור. זה הכל — מהמחשב, מהפלאפון, מכל מקום.</div>
-                <div class="feat-tag">/ TELEGRAM</div>
-            </li>
-            <li class="feat-row">
-                <div class="feat-num">07</div>
-                <div class="feat-title">גיבוי קבלות בדרייב</div>
-                <div class="feat-desc">כל תמונה נשמרת אוטומטית בגוגל דרייב שלך — מאורגנת, מתויגת, וזמינה כשתצטרך אותה לרשויות.</div>
-                <div class="feat-tag">/ G-DRIVE</div>
-            </li>
-        </ul>
+<section class="details">
+    <div class="details__head">
+        <div class="details__eyebrow">PRACTICAL DETAILS</div>
+        <h2 class="details__title">מה זה אומר <span style="background: var(--grad); -webkit-background-clip: text; background-clip: text; color: transparent;">בפועל.</span></h2>
+    </div>
+    <div class="details__grid">
+        <article class="detail"><div class="detail__title">13 קטגוריות בעברית</div><p class="detail__desc">אוכל, סופר/מכולת, תחבורה, דלק, ביגוד, אלקטרוניקה, משרד, בריאות, בילויים, חשבונות, מנויים, בית, אחר.</p></article>
+<article class="detail"><div class="detail__title">הדאטה ב-Drive שלך</div><p class="detail__desc">OAuth per-client. הגיליון נוצר בחשבון שלך — לא בשלנו. אנחנו רואים רק metadata.</p></article>
+<article class="detail"><div class="detail__title">WhatsApp עתידי</div><p class="detail__desc">כרגע טלגרם בלבד. WhatsApp Business API בתכנון.</p></article>
+<article class="detail"><div class="detail__title">חיווי תוכן</div><p class="detail__desc">אם הבוט לא בטוח בשדה — מבקש אישור לפני שמירה.</p></article>
     </div>
 </section>
 
-<!-- HOW IT WORKS -->
-<section class="steps-bg">
-    <div class="container">
-        <div class="section-head">
-            <div>
-                <div class="section-eyebrow">/ How it works</div>
-                <h2 class="section-title">ארבעה צעדים.<br>מתמונה לטבלה.</h2>
-            </div>
-            <div class="section-meta">§03&#10;FLOW&#10;—————&#10;~12 SEC</div>
-        </div>
-
-        <div class="steps-grid">
-            <div class="step">
-                <div class="step-num">STEP 01</div>
-                <svg class="step-icon" width="42" height="42" viewBox="0 0 42 42" fill="none">
-                    <rect x="3" y="7" width="36" height="29" stroke="currentColor" stroke-width="2.2"/>
-                    <circle cx="21" cy="21" r="8.5" stroke="currentColor" stroke-width="2.2"/>
-                    <circle cx="31" cy="13" r="1.6" fill="currentColor"/>
-                </svg>
-                <h3>שלח תמונה לבוט</h3>
-                <p>פותחים את הצ׳אט בטלגרם, מצלמים את הקבלה (או מעלים מהגלריה), ושולחים. זה הכל.</p>
-            </div>
-            <div class="step">
-                <div class="step-num">STEP 02</div>
-                <svg class="step-icon" width="42" height="42" viewBox="0 0 42 42" fill="none">
-                    <rect x="6" y="4" width="30" height="34" stroke="currentColor" stroke-width="2.2"/>
-                    <line x1="12" y1="14" x2="30" y2="14" stroke="currentColor" stroke-width="2.2"/>
-                    <line x1="12" y1="21" x2="30" y2="21" stroke="currentColor" stroke-width="2.2"/>
-                    <line x1="12" y1="28" x2="22" y2="28" stroke="currentColor" stroke-width="2.2"/>
-                </svg>
-                <h3>ה-AI קורא את הפרטים</h3>
-                <p>הבוט מזהה: סכום, תאריך, בית עסק, קטגוריה ומטבע — תוך שניות בודדות.</p>
-            </div>
-            <div class="step">
-                <div class="step-num">STEP 03</div>
-                <svg class="step-icon" width="42" height="42" viewBox="0 0 42 42" fill="none">
-                    <rect x="3" y="7" width="36" height="29" stroke="currentColor" stroke-width="2.2"/>
-                    <line x1="3" y1="15" x2="39" y2="15" stroke="currentColor" stroke-width="2.2"/>
-                    <line x1="15" y1="15" x2="15" y2="36" stroke="currentColor" stroke-width="2.2"/>
-                    <line x1="27" y1="15" x2="27" y2="36" stroke="currentColor" stroke-width="2.2"/>
-                </svg>
-                <h3>שורה נוספת לגיליון</h3>
-                <p>גוגל שיטס שלך מתעדכן אוטומטית. שורה חדשה, מסודר, בלי להזיז את האצבע.</p>
-            </div>
-            <div class="step">
-                <div class="step-num">STEP 04</div>
-                <svg class="step-icon" width="42" height="42" viewBox="0 0 42 42" fill="none">
-                    <path d="M9 15 L9 34 L33 34 L33 15 L25 7 L9 7 Z" stroke="currentColor" stroke-width="2.2" fill="none" stroke-linejoin="miter"/>
-                    <path d="M25 7 L25 15 L33 15" stroke="currentColor" stroke-width="2.2"/>
-                </svg>
-                <h3>גיבוי בדרייב</h3>
-                <p>התמונה המקורית נשמרת בתיקייה ייעודית בדרייב שלך — מתויגת ומוכנה לכשתצטרך.</p>
-            </div>
+<section class="pricing">
+    <div class="pricing__card">
+        <div class="pricing__eyebrow">תמחור</div>
+        <div class="pricing__text">10 קבלות ראשונות חינם · 50 קבלות ב-50₪ · 100 ב-90₪ · 200 ב-160₪. ללא מנוי חודשי.</div>
+        <div class="pricing__actions">
+            <a href="https://t.me/bautomatiosbot" target="_blank" rel="noopener" class="btn btn--primary">פתח בטלגרם</a><a href="../#platform" class="btn btn--ghost">חזרה לפלטפורמה</a>
         </div>
     </div>
 </section>
 
-<!-- PRICING -->
-<section>
-    <div class="container">
-        <div class="section-head">
-            <div>
-                <div class="section-eyebrow">/ Pricing</div>
-                <h2 class="section-title">תמחור פשוט.<br>בלי מנויים.</h2>
-            </div>
-            <div class="section-meta">§04&#10;PRICING&#10;—————&#10;PAY/USE</div>
+<footer class="footer">
+    <div class="footer__inner">
+        <div style="display:flex; align-items:center; gap:10px; font-weight:700; color: var(--ink);">
+            <span class="brand__mark"></span>
+            <span>B Automations</span>
         </div>
-
-        <div class="price-wrap">
-            <div class="price-receipt">
-                <div class="price-stamp">10 חינם</div>
-                <h3>EXPENSE BRIDGE / 001</h3>
-                <div class="receipt-no">RCPT #2026—000001 · MAY 10</div>
-                <ul>
-                    <li><span class="item">סריקת קבלה</span><span class="cost">₪1.00 / קבלה</span></li>
-                    <li><span class="item">10 הקבלות הראשונות</span><span class="cost free">חינם</span></li>
-                    <li><span class="item">סנכרון Google Sheets</span><span class="cost">כלול</span></li>
-                    <li><span class="item">גיבוי Google Drive</span><span class="cost">כלול</span></li>
-                    <li><span class="item">תמיכה בעברית</span><span class="cost">כלול</span></li>
-                    <li><span class="item">מנוי חודשי</span><span class="cost">אין</span></li>
-                </ul>
-                <div class="total-row">
-                    <span class="total-label">להתחלה</span>
-                    <span class="total-amt">₪0</span>
-                </div>
-                <div class="price-sub">משלמים רק על מה שמשתמשים</div>
-                <a href="https://t.me/bautomatiosbot" class="price-cta">התחל את 10 הקבלות שלך</a>
-            </div>
-        </div>
-    </div>
-</section>
-
-<!-- FINAL CTA -->
-<section class="final">
-    <div class="container">
-        <div class="final-content">
-            <div class="final-eyebrow">— עכשיו תורך —</div>
-            <h2>תפתח את טלגרם.<br>תשלח <span class="accent">קבלה אחת.</span></h2>
-            <p>בלי הרשמה. בלי טפסים. בלי אפליקציה חדשה. רק תמונה אחת — וכל השאר אוטומטי.</p>
-            <a href="https://t.me/bautomatiosbot" class="final-cta">פתח את הבוט</a>
-            <div class="final-note">Free for the first 10 receipts · No card required</div>
-        </div>
-    </div>
-</section>
-
-<!-- FOOTER -->
-<footer>
-    <div class="container">
-        <div>EXPENSE BRIDGE / EST. 2026 / TLV</div>
-        <div>A product by <a href="../b-automations/index.html">B Automations</a></div>
+        <span>© ברק אוטומציות · עוסק זעיר 1803017523</span>
     </div>
 </footer>
 
