@@ -959,6 +959,27 @@ img, svg { max-width: 100%; display: block; }
     text-transform: uppercase;
     font-weight: 600;
 }
+/* Direct Telegram quick-action for live/beta bots */
+.auto-card__quick {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: 14px;
+    padding: 10px 14px;
+    background: var(--ink);
+    color: white !important;
+    border-radius: var(--r-pill);
+    font-family: inherit;
+    font-weight: 700;
+    font-size: 0.88rem;
+    transition: all 240ms var(--ease);
+    align-self: flex-start;
+}
+.auto-card__quick:hover {
+    background: var(--brand-1);
+    transform: translateY(-2px);
+}
+.auto-card__quick svg { flex-shrink: 0; }
 
 .platform-empty {
     text-align: center;
@@ -1468,7 +1489,7 @@ img, svg { max-width: 100%; display: block; }
     </div>
 
     <div class="automations reveal" id="autoGrid">
-        <a class="auto-card auto-card--blue" href="./expense-bridge/" data-status="live" data-tags="קבלות חשבוניות הוצאות אקסל מיילים">
+        <article class="auto-card auto-card--blue" data-href="./expense-bridge/" data-status="live" data-tags="קבלות חשבוניות הוצאות אקסל מיילים">
             <div class="auto-card__top">
                 <div class="auto-card__icon auto-card__icon--blue">📸</div>
                 <span class="auto-card__badge auto-card__badge--live">LIVE</span>
@@ -1476,13 +1497,17 @@ img, svg { max-width: 100%; display: block; }
             <div class="auto-card__name">Expense Bridge</div>
             <div class="auto-card__hebrew">קבלות → אקסל</div>
             <p class="auto-card__desc">תמונת קבלה ב-WhatsApp/טלגרם → שורה מסודרת באקסל שלכם עם תאריך, סכום, קטגוריה.</p>
+            <a class="auto-card__quick" href="https://t.me/bautomatiosbot" target="_blank" rel="noopener" onclick="event.stopPropagation()">
+                <svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor"><path d="M9.78 18.65l.28-4.23 7.68-6.92c.34-.31-.07-.46-.52-.19L7.74 13.3 3.64 12c-.88-.25-.89-.86.2-1.3l15.97-6.16c.73-.33 1.43.18 1.15 1.3l-2.72 12.81c-.19.91-.74 1.13-1.5.71L12.6 16.3l-1.99 1.93c-.23.23-.42.42-.83.42z"/></svg>
+                <span>פתח בטלגרם</span>
+            </a>
             <div class="auto-card__footer">
                 <span class="auto-card__category">FINANCE</span>
                 <span>פתח דף ←</span>
             </div>
-        </a>
+        </article>
 
-        <a class="auto-card auto-card--pink" href="./sitebot/" data-status="beta" data-tags="אתר אתרים שיווק תדמית">
+        <article class="auto-card auto-card--pink" data-href="./sitebot/" data-status="beta" data-tags="אתר אתרים שיווק תדמית">
             <div class="auto-card__top">
                 <div class="auto-card__icon auto-card__icon--pink">🌐</div>
                 <span class="auto-card__badge auto-card__badge--beta">BETA</span>
@@ -1490,13 +1515,17 @@ img, svg { max-width: 100%; display: block; }
             <div class="auto-card__name">Sitebot</div>
             <div class="auto-card__hebrew">אתר עסקי דרך שיחה</div>
             <p class="auto-card__desc">שיחה בעברית עם הבוט → אתר מקצועי מותאם לעסק שלכם תוך 5 דקות. 79₪/חודש.</p>
+            <a class="auto-card__quick" href="https://t.me/Bsite12bot" target="_blank" rel="noopener" onclick="event.stopPropagation()">
+                <svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor"><path d="M9.78 18.65l.28-4.23 7.68-6.92c.34-.31-.07-.46-.52-.19L7.74 13.3 3.64 12c-.88-.25-.89-.86.2-1.3l15.97-6.16c.73-.33 1.43.18 1.15 1.3l-2.72 12.81c-.19.91-.74 1.13-1.5.71L12.6 16.3l-1.99 1.93c-.23.23-.42.42-.83.42z"/></svg>
+                <span>פתח בטלגרם</span>
+            </a>
             <div class="auto-card__footer">
                 <span class="auto-card__category">WEBSITE</span>
                 <span>פתח דף ←</span>
             </div>
-        </a>
+        </article>
 
-        <a class="auto-card auto-card--green" href="./leadclub/" data-status="beta" data-tags="לקוחות מועדון לידים SMS שיווק">
+        <article class="auto-card auto-card--green" data-href="./leadclub/" data-status="beta" data-tags="לקוחות מועדון לידים SMS שיווק">
             <div class="auto-card__top">
                 <div class="auto-card__icon auto-card__icon--green">👥</div>
                 <span class="auto-card__badge auto-card__badge--beta">BETA</span>
@@ -1504,13 +1533,17 @@ img, svg { max-width: 100%; display: block; }
             <div class="auto-card__name">Leadclub</div>
             <div class="auto-card__hebrew">מועדון לקוחות אוטומטי</div>
             <p class="auto-card__desc">ייבוא רשימה (אקסל/צילום) → שליחת מבצעים ב-SMS+מייל אוטומטית, ניהול lifecycle.</p>
+            <a class="auto-card__quick" href="https://t.me/Leadclubbot" target="_blank" rel="noopener" onclick="event.stopPropagation()">
+                <svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor"><path d="M9.78 18.65l.28-4.23 7.68-6.92c.34-.31-.07-.46-.52-.19L7.74 13.3 3.64 12c-.88-.25-.89-.86.2-1.3l15.97-6.16c.73-.33 1.43.18 1.15 1.3l-2.72 12.81c-.19.91-.74 1.13-1.5.71L12.6 16.3l-1.99 1.93c-.23.23-.42.42-.83.42z"/></svg>
+                <span>פתח בטלגרם</span>
+            </a>
             <div class="auto-card__footer">
                 <span class="auto-card__category">CRM</span>
                 <span>פתח דף ←</span>
             </div>
-        </a>
+        </article>
 
-        <a class="auto-card auto-card--amber" href="./invoice-bridge/" data-status="soon" data-tags="חשבוניות ספקים הנהלת חשבונות PDF">
+        <article class="auto-card auto-card--amber" data-href="./invoice-bridge/" data-status="soon" data-tags="חשבוניות ספקים הנהלת חשבונות PDF">
             <div class="auto-card__top">
                 <div class="auto-card__icon auto-card__icon--amber">🧾</div>
                 <span class="auto-card__badge auto-card__badge--soon">בקרוב</span>
@@ -1522,9 +1555,9 @@ img, svg { max-width: 100%; display: block; }
                 <span class="auto-card__category">FINANCE</span>
                 <span>למידע נוסף ←</span>
             </div>
-        </a>
+        </article>
 
-        <a class="auto-card auto-card--cyan" href="./order-bridge/" data-status="soon" data-tags="הזמנות לקוחות פקודות עבודה">
+        <article class="auto-card auto-card--cyan" data-href="./order-bridge/" data-status="soon" data-tags="הזמנות לקוחות פקודות עבודה">
             <div class="auto-card__top">
                 <div class="auto-card__icon auto-card__icon--cyan">📋</div>
                 <span class="auto-card__badge auto-card__badge--soon">בקרוב</span>
@@ -1536,9 +1569,9 @@ img, svg { max-width: 100%; display: block; }
                 <span class="auto-card__category">OPERATIONS</span>
                 <span>למידע נוסף ←</span>
             </div>
-        </a>
+        </article>
 
-        <a class="auto-card auto-card--blue" href="./report-bridge/" data-status="soon" data-tags="דוחות כספיים מטריקות אנליסטים">
+        <article class="auto-card auto-card--blue" data-href="./report-bridge/" data-status="soon" data-tags="דוחות כספיים מטריקות אנליסטים">
             <div class="auto-card__top">
                 <div class="auto-card__icon auto-card__icon--blue">📊</div>
                 <span class="auto-card__badge auto-card__badge--soon">בקרוב</span>
@@ -1550,9 +1583,9 @@ img, svg { max-width: 100%; display: block; }
                 <span class="auto-card__category">ANALYTICS</span>
                 <span>למידע נוסף ←</span>
             </div>
-        </a>
+        </article>
 
-        <a class="auto-card auto-card--pink" href="./lead-speed/" data-status="soon" data-tags="לידים מענה 24/7 שיווק">
+        <article class="auto-card auto-card--pink" data-href="./lead-speed/" data-status="soon" data-tags="לידים מענה 24/7 שיווק">
             <div class="auto-card__top">
                 <div class="auto-card__icon auto-card__icon--pink">⚡</div>
                 <span class="auto-card__badge auto-card__badge--soon">בקרוב</span>
@@ -1564,9 +1597,9 @@ img, svg { max-width: 100%; display: block; }
                 <span class="auto-card__category">SALES</span>
                 <span>למידע נוסף ←</span>
             </div>
-        </a>
+        </article>
 
-        <a class="auto-card auto-card--green" href="./follow-up/" data-status="soon" data-tags="פולואפים לידים שיווק">
+        <article class="auto-card auto-card--green" data-href="./follow-up/" data-status="soon" data-tags="פולואפים לידים שיווק">
             <div class="auto-card__top">
                 <div class="auto-card__icon auto-card__icon--green">🔁</div>
                 <span class="auto-card__badge auto-card__badge--soon">בקרוב</span>
@@ -1578,9 +1611,9 @@ img, svg { max-width: 100%; display: block; }
                 <span class="auto-card__category">SALES</span>
                 <span>למידע נוסף ←</span>
             </div>
-        </a>
+        </article>
 
-        <a class="auto-card auto-card--amber" href="./legal-bridge/" data-status="soon" data-tags="משפטי חוזים מסמכים תמצית">
+        <article class="auto-card auto-card--amber" data-href="./legal-bridge/" data-status="soon" data-tags="משפטי חוזים מסמכים תמצית">
             <div class="auto-card__top">
                 <div class="auto-card__icon auto-card__icon--amber">⚖️</div>
                 <span class="auto-card__badge auto-card__badge--soon">בקרוב</span>
@@ -1592,9 +1625,9 @@ img, svg { max-width: 100%; display: block; }
                 <span class="auto-card__category">LEGAL</span>
                 <span>למידע נוסף ←</span>
             </div>
-        </a>
+        </article>
 
-        <a class="auto-card auto-card--cyan" href="./cv-bridge/" data-status="soon" data-tags="גיוס HR קורות חיים מועמדים">
+        <article class="auto-card auto-card--cyan" data-href="./cv-bridge/" data-status="soon" data-tags="גיוס HR קורות חיים מועמדים">
             <div class="auto-card__top">
                 <div class="auto-card__icon auto-card__icon--cyan">👔</div>
                 <span class="auto-card__badge auto-card__badge--soon">בקרוב</span>
@@ -1606,7 +1639,7 @@ img, svg { max-width: 100%; display: block; }
                 <span class="auto-card__category">HR</span>
                 <span>למידע נוסף ←</span>
             </div>
-        </a>
+        </article>
     </div>
 
     <div class="platform-empty" id="autoEmpty">
@@ -1832,7 +1865,7 @@ document.querySelectorAll('[data-count]').forEach(el => countIO.observe(el));
     else step();
 })();
 
-/* ─── Platform search + filter ─── */
+/* ─── Platform search + filter + clickable cards ─── */
 (function() {
     const grid = document.getElementById('autoGrid');
     const search = document.getElementById('autoSearch');
@@ -1842,6 +1875,23 @@ document.querySelectorAll('[data-count]').forEach(el => countIO.observe(el));
     const cards = Array.from(grid.querySelectorAll('.auto-card'));
     let activeFilter = 'all';
     let query = '';
+
+    // Make article.auto-card behave like a link via data-href
+    cards.forEach(card => {
+        const href = card.dataset.href;
+        if (!href) return;
+        card.style.cursor = 'pointer';
+        card.setAttribute('role', 'link');
+        card.setAttribute('tabindex', '0');
+        card.addEventListener('click', (e) => {
+            // Don't intercept clicks on inner anchors (Telegram quick link)
+            if (e.target.closest('a')) return;
+            window.location.href = href;
+        });
+        card.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') { window.location.href = href; }
+        });
+    });
 
     function applyFilters() {
         let visible = 0;
